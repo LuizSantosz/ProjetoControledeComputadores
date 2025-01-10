@@ -1,0 +1,21 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoramento de Rede</title>
+</head>
+<body>
+    <h1>Monitoramento de Computadores em Rede</h1>
+    <div id="dados"></div>
+    <script>
+        async function fetchData() {
+            const response = await fetch('/api/monitor');
+            const data = await response.json();
+            document.getElementById('dados').innerHTML = data.map(item => `<p>${item}</p>`).join('');
+        }
+        fetchData();
+        setInterval(fetchData, 5000);
+    </script>
+</body>
+</html>
