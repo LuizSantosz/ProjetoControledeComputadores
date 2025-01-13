@@ -1,15 +1,25 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Collections.Generic;
 
 public class Startup {
-    public void ConfigureServices(IServiceCollection services) {
-        services.AddControllers();
+    public Startup(IConfiguration configuration)
+    {
+        Configuration = configuration;
     }
 
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment evn) {
-        if (evn.IsDevelopment()) {
+    public IConfiguration Configuration { get; }
+
+    public void ConfigureServices(IServiceCollection services) {
+        services.AddControllers();
+        services.Configure<MonitorOptions>(Configuration.GetSection("Computadores"));
+    }
+
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
+        if (env.IsDevelopment()) {
             app.UseDeveloperExceptionPage();
         } else {
             app.UseExceptionHandler("/Home/Error");
@@ -25,7 +35,10 @@ public class Startup {
 
         app.UseEndpoints(endpoints => {
             endpoints.MapControllers();
-
         });
     }
+}
+
+public class MonitorOptions {
+    public List<string> Computadores { get; set; }
 }
