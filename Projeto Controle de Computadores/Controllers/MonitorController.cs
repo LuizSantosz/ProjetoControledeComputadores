@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Projeto_Controle_de_Computadores.Models;
+using Projeto_Controle_de_Computadores.Services;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.NetworkInformation;
@@ -9,9 +11,13 @@ using System.Threading.Tasks;
 [ApiController]
 public class MonitorController : ControllerBase {
     private readonly List<string> computadores;
+    private readonly GrupoService grupoService;
+    private readonly ComputadorService computadorService;
 
-    public MonitorController(IOptions<MonitorOptions> options) {
+    public MonitorController(IOptions<MonitorOptions> options, GrupoService grupoService, ComputadorService computadorService) {
         computadores = options.Value.Computadores ?? new List<string>();
+        this.grupoService = grupoService;
+        this.computadorService = computadorService;
         Console.WriteLine("MonitorController: Computadores inicializados.");
     }
 
@@ -20,31 +26,22 @@ public class MonitorController : ControllerBase {
         var resultados = new List<string>();
         Ping ping = new Ping();
 
-        Console.WriteLine("Número de IPs lidos: " + computadores.Count);
-        foreach (var ip in computadores) {
-            Console.WriteLine("Lendo IP: " + ip);
-        }
-
         foreach (var ip in computadores) {
             if (IsValidIP(ip)) {
                 try {
                     var resposta = await ping.SendPingAsync(ip);
-                    Console.WriteLine($"Ping para {ip}: {resposta.Status}");
                     resultados.Add($"{ip}: {(resposta.Status == IPStatus.Success ? "Online" : "Offline")}");
                 } catch (PingException ex) {
-                    Console.WriteLine($"Erro no ping para {ip}: {ex.Message}");
                     resultados.Add($"{ip}: Erro - {ex.Message}");
                 } catch (Exception ex) {
-                    Console.WriteLine($"Erro geral para {ip}: {ex.Message}");
                     resultados.Add($"{ip}: Erro - {ex.Message}");
                 }
             } else {
-                Console.WriteLine($"IP Inválido: {ip}");
                 resultados.Add($"{ip}: IP Inválido");
             }
         }
 
-        return resultados;
+        return Ok(resultados);
     }
 
     private bool IsValidIP(string ip) {

@@ -2,20 +2,23 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileSystemGlobbing.Internal.Patterns;
 using Microsoft.Extensions.Hosting;
+using Projeto_Controle_de_Computadores.Services;
 using System.Collections.Generic;
 
 public class Startup {
-    public Startup(IConfiguration configuration)
-    {
+    public Startup(IConfiguration configuration) {
         Configuration = configuration;
     }
 
     public IConfiguration Configuration { get; }
 
     public void ConfigureServices(IServiceCollection services) {
+        services.Configure<MonitorOptions>(Configuration.GetSection("MonitorOptions"));
+        services.AddSingleton<GrupoService>();
+        services.AddSingleton<ComputadorService>();
         services.AddControllers();
-        services.Configure<MonitorOptions>(Configuration.GetSection("Computadores"));
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
@@ -33,8 +36,11 @@ public class Startup {
 
         app.UseAuthorization();
 
-        app.UseEndpoints(endpoints => {
-            endpoints.MapControllers();
+        app.UseEndpoints(endpoints => { 
+            endpoints.MapControllers(); 
+            endpoints.MapControllerRoute(
+                name: "default", 
+                pattern: "{controller=Cadastro}/{action=ListarGrupos}/{id?}");
         });
     }
 }
