@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Projeto_Controle_de_Computadores.Models.Computador>
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listar Computadores</title>
+</head>
+<body>
+    <h1>Listar Computadores</h1>
+    <a href="@Url.Action("CadastroComputador", "Cadastro")">Cadastrar Novo Computador</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Nome do Computador</th>
+                <th>Endereço IP</th>
+                <th>Grupo</th>
+                <th>Nome da Pessoa</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var computador in Model)
+            {
+                <tr>
+                    <td>@computador.Nome</td>
+                    <td>@computador.EnderecoIp</td>
+                    <td>@computador.Grupo?.Nome</td>
+                    <td>@computador.NomePessoa</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>

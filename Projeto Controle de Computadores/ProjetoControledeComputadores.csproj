@@ -7,8 +7,4 @@
     <RootNamespace>Projeto_Controle_de_Computadores</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Folder Include="Views\Monitor\" />
-  </ItemGroup>
-
 </Project>

@@ -1,0 +1,29 @@
+﻿@model IEnumerable<Projeto_Controle_de_Computadores.Models.Grupo>
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listar Grupos</title>
+</head>
+<body>
+    <h1>Listar Grupos</h1>
+    <a href="@Url.Action("CadastroGrupo", "Cadastro")">Cadastrar Novo Grupo</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Nome do Grupo</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var grupo in Model)
+            {
+                <tr>
+                    <td>@grupo.Nome</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>

@@ -6,6 +6,7 @@ namespace Projeto_Controle_de_Computadores.Controllers {
     public class CadastroController : Controller {
         private readonly GrupoService _grupoService;
         private readonly ComputadorService _computadorService;
+
         public CadastroController(GrupoService grupoService, ComputadorService computadorService) {
             _grupoService = grupoService;
             _computadorService = computadorService;
@@ -18,8 +19,11 @@ namespace Projeto_Controle_de_Computadores.Controllers {
 
         [HttpPost]
         public IActionResult CadastroGrupo(Grupo grupo) {
-            _grupoService.AdicionarGrupo(grupo);
-            return RedirectToAction("ListarGrupos");
+            if (ModelState.IsValid) {
+                _grupoService.AdicionarGrupo(grupo);
+                return RedirectToAction("ListarGrupos");
+            }
+            return View(grupo);  // Retorna a view com o modelo para exibir possíveis erros de validação
         }
 
         [HttpGet]
@@ -30,14 +34,30 @@ namespace Projeto_Controle_de_Computadores.Controllers {
 
         [HttpGet]
         public IActionResult CadastroComputador() {
-            ViewBag.Grupos = _grupoService.ListarGrupos();
-            return View();
+            var grupos = _grupoService.ListarGrupos();
+
+            // Se não houver grupos cadastrados, avise o usuário e não carregue a página de cadastro
+            if (grupos == null || !grupos.Any()) {
+                ViewBag.ErrorMessage = "Não há grupos disponíveis. Por favor, cadastre um grupo primeiro.";
+                return View("ListarGrupos");  // Pode redirecionar para a tela de ListarGrupos ou exibir uma mensagem
+            }
+
+            // Passa uma nova instância do modelo Computador
+            ViewBag.Grupos = grupos;
+            return View(new Computador());  // Passa um novo Computador
         }
 
         [HttpPost]
         public IActionResult CadastroComputador(Computador computador) {
-            _computadorService.AdicionarComputador(computador);
-            return RedirectToAction("ListarComputadores");
+            if (ModelState.IsValid) {
+                // Adiciona o computador ao serviço
+                _computadorService.AdicionarComputador(computador);
+                return RedirectToAction("ListarComputadores");
+            }
+
+            // Caso haja erros de validação, devolve para a view
+            ViewBag.Grupos = _grupoService.ListarGrupos(); // Passa a lista de grupos para a view
+            return View(computador);
         }
 
         [HttpGet]
@@ -45,6 +65,5 @@ namespace Projeto_Controle_de_Computadores.Controllers {
             var computadores = _computadorService.ListarComputadores();
             return View(computadores);
         }
-
     }
 }

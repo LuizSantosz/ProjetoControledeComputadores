@@ -1,0 +1,61 @@
+﻿@using Projeto_Controle_de_Computadores.Models
+@model Projeto_Controle_de_Computadores.Models.Computador
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Computador</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.validate/1.19.2/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+</head>
+<body>
+    <h1>Cadastrar Computador</h1>
+    <form method="post">
+        <div>
+            <label for="Nome">Nome do Computador:</label>
+            <input type="text" id="Nome" name="Nome" value="@Model.Nome" required />
+            @Html.ValidationMessageFor(m => m.Nome)
+        </div>
+
+        <div>
+            <label for="EnderecoIp">Endereço IP:</label>
+            <input type="text" id="EnderecoIp" name="EnderecoIp" value="@Model.EnderecoIp" required />
+            @Html.ValidationMessageFor(m => m.EnderecoIp)
+        </div>
+
+        <div>
+            <label for="GrupoId">Grupo:</label>
+            @if (ViewBag.Grupos != null && ViewBag.Grupos.Any())
+            {
+                var grupos = ViewBag.Grupos as List<Projeto_Controle_de_Computadores.Models.Grupo>;
+                var selectList = new SelectList(grupos, "Id", "Nome", Model.GrupoId);
+                @Html.DropDownListFor(m => m.GrupoId, selectList, new { @id = "GrupoId", @required = "required" })
+            }
+            else
+            {
+                <select id="GrupoId" name="GrupoId" required>
+                    <option disabled>Não há grupos disponíveis</option>
+                </select>
+            }
+        </div>
+
+        <div>
+            <label for="NomePessoa">Nome da Pessoa:</label>
+            <input type="text" id="NomePessoa" name="NomePessoa" value="@Model.NomePessoa" required />
+            @Html.ValidationMessageFor(m => m.NomePessoa)
+        </div>
+
+        <button type="submit">Cadastrar</button>
+    </form>
+
+    <script>
+        // Ativa a validação do lado cliente, se necessário
+        $(document).ready(function () {
+            $("form").validate(); // Habilita a validação do formulário
+        });
+    </script>
+</body>
+</html>
