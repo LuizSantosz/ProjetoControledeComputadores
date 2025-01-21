@@ -49,10 +49,10 @@ namespace Projeto_Controle_de_Computadores.Controllers {
                 return View("ListarGrupos");  // Pode redirecionar para a tela de ListarGrupos ou exibir uma mensagem
             }
 
-            return View(grupos);  // Passa diretamente a lista de grupos como modelo
+            // Passa a lista de grupos para a view
+            ViewBag.Grupos = grupos;
+            return View(new Computador());  // Passa um novo Computador para a view
         }
-
-
 
         [HttpPost]
         public IActionResult CadastroComputador(Computador computador) {
@@ -62,7 +62,7 @@ namespace Projeto_Controle_de_Computadores.Controllers {
                 return RedirectToAction("ListarComputadores");
             }
 
-            // Caso haja erros de validação, devolve para a view
+            // Caso haja erros de validação, devolve para a view com o computador e os grupos
             ViewBag.Grupos = _grupoService.ListarGrupos(); // Passa a lista de grupos para a view
             return View(computador);
         }

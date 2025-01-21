@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Projeto_Controle_de_Computadores.Models.Grupo>
+﻿@model Projeto_Controle_de_Computadores.Models.Computador
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -10,16 +10,31 @@
 <body>
     <h1>Cadastro de Computador</h1>
 
-    @if (Model != null && Model.Any())
+    @if (ViewBag.ErrorMessage != null)
+    {
+        <p style="color:red;">@ViewBag.ErrorMessage</p>
+    }
+
+    @if (Model != null)
     {
         <form method="post">
-            <label for="grupo">Escolher Grupo:</label>
-            <select id="grupo" name="GrupoId">
-                @foreach (var grupo in Model)
-                {
-                    <option value="@grupo.Id">@grupo.Nome</option>
-                }
-            </select>
+            <div>
+                <label for="nome">Nome da Pessoa:</label>
+                <input type="text" id="nome" name="Nome" value="@Model.Nome" required />
+            </div>
+            <div>
+                <label for="ip">Endereço de IP:</label>
+                <input type="text" id="ip" name="Ip" value="@Model.Ip" required />
+            </div>
+            <div>
+                <label for="grupo">Escolher Grupo:</label>
+                <select id="grupo" name="GrupoId" required>
+                    @foreach (var grupo in ViewBag.Grupos)
+                    {
+                        <option value="@grupo.Id">@grupo.Nome</option>
+                    }
+                </select>
+            </div>
             <button type="submit">Cadastrar Computador</button>
         </form>
     }
