@@ -29,8 +29,15 @@ namespace Projeto_Controle_de_Computadores.Controllers {
         [HttpGet]
         public IActionResult ListarGrupos() {
             var grupos = _grupoService.ListarGrupos();
+
+            // Certifique-se de que grupos nunca seja null
+            if (grupos == null) {
+                grupos = new List<Grupo>(); // Garante que seja uma lista vazia
+            }
+
             return View(grupos);
         }
+
 
         [HttpGet]
         public IActionResult CadastroComputador() {
@@ -42,10 +49,10 @@ namespace Projeto_Controle_de_Computadores.Controllers {
                 return View("ListarGrupos");  // Pode redirecionar para a tela de ListarGrupos ou exibir uma mensagem
             }
 
-            // Passa uma nova instância do modelo Computador
-            ViewBag.Grupos = grupos;
-            return View(new Computador());  // Passa um novo Computador
+            return View(grupos);  // Passa diretamente a lista de grupos como modelo
         }
+
+
 
         [HttpPost]
         public IActionResult CadastroComputador(Computador computador) {

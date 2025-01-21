@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Projeto_Controle_de_Computadores.Models.Grupo>
+﻿@using System.Linq
+@model IEnumerable<Projeto_Controle_de_Computadores.Models.Grupo>
 
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -6,24 +7,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listar Grupos</title>
+    <link rel="stylesheet" href="~/css/Projeto_Controle_de_Computadores.styles.css" />
 </head>
 <body>
     <h1>Listar Grupos</h1>
     <a href="@Url.Action("CadastroGrupo", "Cadastro")">Cadastrar Novo Grupo</a>
-    <table>
-        <thead>
-            <tr>
-                <th>Nome do Grupo</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var grupo in Model)
-            {
+
+    @if (Model != null && Model.Any())
+    {
+        <table>
+            <thead>
                 <tr>
-                    <td>@grupo.Nome</td>
+                    <th>Nome do Grupo</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var grupo in Model)
+                {
+                    <tr>
+                        <td>@grupo.Nome</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-warning">Não há grupos cadastrados.</div>
+    }
 </body>
 </html>
