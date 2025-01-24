@@ -26,6 +26,13 @@
                 {
                     <tr>
                         <td>@grupo.Nome</td>
+                        <td>
+                            <a href="@Url.Action("EditarGrupo", "Cadastro", new { id = grupo.Id })">Editar</a>
+                            <form method="post" action="@Url.Action("ExcluirGrupo", "Cadastro")" style="display:inline;">
+                                <input type="hidden" name="id" value="@grupo.Id" />
+                                <button type="submit" onclick="return confirm('Tem certeza que deseja excluir este grupo?');">Excluir</button>
+                            </form>
+                        </td>
                     </tr>
                 }
             </tbody>

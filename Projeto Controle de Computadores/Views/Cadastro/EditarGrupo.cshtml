@@ -1,0 +1,21 @@
+﻿@model Projeto_Controle_de_Computadores.Models.Grupo
+
+<!DOCTYPE html>
+    <html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Editar Grupo</title>
+    </head>
+    <body>
+        <h1>Editar Grupo</h1>
+        <form method="post">
+            <input type="hidden" name="id" value="@Model.Id" />
+            <div>
+                <label for="Nome">Nome do Grupo:</label>
+                <input type="text" id="Nome" name="Nome" value="@Model.Nome" Required />
+            </div>
+            <button type="submit">Salvar Alterações</button>
+        </Form>
+    </body>
+    </html>

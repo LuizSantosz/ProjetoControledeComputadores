@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Projeto_Controle_de_Computadores.Models;
 using Projeto_Controle_de_Computadores.Services;
+using System.Linq.Expressions;
 
 namespace Projeto_Controle_de_Computadores.Controllers {
     public class CadastroController : Controller {
@@ -23,48 +24,107 @@ namespace Projeto_Controle_de_Computadores.Controllers {
                 _grupoService.AdicionarGrupo(grupo);
                 return RedirectToAction("ListarGrupos");
             }
-            return View(grupo);  // Retorna a view com o modelo para exibir possíveis erros de validação
+            return View(grupo);
         }
 
         [HttpGet]
         public IActionResult ListarGrupos() {
             var grupos = _grupoService.ListarGrupos();
-
-            // Certifique-se de que grupos nunca seja null
             if (grupos == null) {
-                grupos = new List<Grupo>(); // Garante que seja uma lista vazia
+                grupos = new List<Grupo>();
             }
 
             return View(grupos);
+        }
+
+        [HttpGet]
+        public IActionResult EditarGrupo(int id) {
+            var grupo = _grupoService.ListarGrupos().FirstOrDefault(g => g.Id == id);
+            if (grupo == null) {
+                return NotFound();
+            }
+            return View(grupo);
+        }
+
+        [HttpPost]
+        public IActionResult EditarGrupo(Grupo grupo) {
+            if (ModelState.IsValid) {
+                try {
+                    _grupoService.AtualizarGrupo(grupo);
+                    return RedirectToAction("ListarGrupos");
+                } catch (InvalidOperationException ex) {
+                    ViewBag.ErrorMessage = ex.Message;
+                    return View(grupo);
+                }
+            }
+            return View(grupo);
+        }
+
+        [HttpPost]
+        public IActionResult ExcluirGrupo(int id) {
+            try {
+                _grupoService.ExcluirGrupo(id);
+                return RedirectToAction("ListarGrupos");
+            } catch (Exception ex) {
+                ViewBag.ErrorMessage = ex.Message;
+                return RedirectToAction("ListarGrupos");
+            }
         }
 
 
         [HttpGet]
         public IActionResult CadastroComputador() {
             var grupos = _grupoService.ListarGrupos();
-
-            // Se não houver grupos cadastrados, avise o usuário e não carregue a página de cadastro
             if (grupos == null || !grupos.Any()) {
                 ViewBag.ErrorMessage = "Não há grupos disponíveis. Por favor, cadastre um grupo primeiro.";
-                return View("ListarGrupos");  // Pode redirecionar para a tela de ListarGrupos ou exibir uma mensagem
+                return View("ListarGrupos");
             }
 
-            // Passa a lista de grupos para a view
             ViewBag.Grupos = grupos;
-            return View(new Computador());  // Passa um novo Computador para a view
+            return View(new Computador());
         }
 
         [HttpPost]
         public IActionResult CadastroComputador(Computador computador) {
             if (ModelState.IsValid) {
-                // Adiciona o computador ao serviço
                 _computadorService.AdicionarComputador(computador);
                 return RedirectToAction("ListarComputadores");
             }
 
-            // Caso haja erros de validação, devolve para a view com o computador e os grupos
-            ViewBag.Grupos = _grupoService.ListarGrupos(); // Passa a lista de grupos para a view
+            ViewBag.Grupos = _grupoService.ListarGrupos();
             return View(computador);
+        }
+
+        [HttpGet]
+        public IActionResult EditarComputador(int id) {
+            var computador = _computadorService.ListarComputadores().FirstOrDefault(c => c.Id == id);
+            if (computador == null) {
+                return NotFound();
+            }
+
+            ViewBag.Grupos = _grupoService.ListarGrupos();
+            return View(computador);
+        }
+
+        [HttpPost]
+        public IActionResult EditarComputador(Computador computador) {
+            if (ModelState.IsValid) {
+                _computadorService.AtualizarComputador(computador);
+                return RedirectToAction("ListarComputadores");
+            }
+            ViewBag.Grupos = _grupoService.ListarGrupos();
+            return View(computador);
+        }
+
+        [HttpPost]
+        public IActionResult ExcluirComputador(int id) {
+            try {
+                _computadorService.ExcluirComputador(id);
+                return RedirectToAction("Listarcomputadores");
+            } catch (Exception ex) {
+                ViewBag.ErrorMessage = ex.Message;
+                return RedirectToAction("Listarcomputadores");
+            }
         }
 
         [HttpGet]

@@ -19,6 +19,23 @@ namespace Projeto_Controle_de_Computadores.Services {
             grupos.Add(grupo);
         }
 
+        public void AtualizarGrupo(Grupo grupo) {
+            var grupoExistente = grupos.FirstOrDefault(g => g.Id == grupo.Id);
+            if (grupoExistente == null) {
+                throw new InvalidOperationException("Grupo não Encontrado.");
+            }
+            grupoExistente.Nome = grupo.Nome;
+        }
+
+        public void ExcluirGrupo(int id) {
+            var grupo = grupos.FirstOrDefault(g => g.Id == id);
+            if (grupo == null) {
+                throw new InvalidOperationException("Grupo não encontrado.");
+
+            }
+            grupos.Remove(grupo);
+        }
+
         // Retorna a lista de grupos
         public List<Grupo> ListarGrupos() {
             return grupos;

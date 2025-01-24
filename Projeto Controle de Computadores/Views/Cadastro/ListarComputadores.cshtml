@@ -13,10 +13,9 @@
     <table>
         <thead>
             <tr>
-                <th>Nome do Computador</th>
+                <th>Nome</th>
                 <th>Endereço IP</th>
                 <th>Grupo</th>
-                <th>Nome da Pessoa</th>
             </tr>
         </thead>
         <tbody>
@@ -26,9 +25,17 @@
                     <td>@computador.Nome</td>
                     <td>@computador.Ip</td>
                     <td>@computador.Grupo?.Nome</td>
+                    <td>
+                        <a href="@Url.Action("EditarComputador", "Cadastro", new { id = computador.Id })">Editar</a>
+                        <form method="post" action="@Url.Action("ExcluirComputador", "Cadastro")" style="display:inline;">
+                            <input type="hidden" name="id" value="@computador.Id" />
+                            <button type="submit" onclick="return confirm('Tem certeza que deseja excluir este computador?');">Excluir</button>
+                        </form>
+                    </td>
                 </tr>
             }
         </tbody>
+
     </table>
 </body>
 </html>
