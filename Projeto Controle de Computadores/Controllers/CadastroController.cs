@@ -13,6 +13,8 @@ namespace Projeto_Controle_de_Computadores.Controllers {
             _computadorService = computadorService;
         }
 
+        //Grupo
+
         [HttpGet]
         public IActionResult CadastroGrupo() {
             return View();
@@ -27,15 +29,33 @@ namespace Projeto_Controle_de_Computadores.Controllers {
             return View(grupo);
         }
 
+        //Computador
+
         [HttpGet]
-        public IActionResult ListarGrupos() {
+        public IActionResult CadastroComputador() {
             var grupos = _grupoService.ListarGrupos();
-            if (grupos == null) {
-                grupos = new List<Grupo>();
+            if (grupos == null || !grupos.Any()) {
+                ViewBag.ErrorMessage = "Não há grupos disponíveis. Por favor, cadastre um grupo primeiro.";
+                return RedirectToAction("ListarGrupos"); // Corrigido para listar os grupos
             }
 
-            return View(grupos);
+            ViewBag.Grupos = grupos;
+            return View(new Computador());
         }
+
+
+        [HttpPost]
+        public IActionResult CadastroComputador(Computador computador) {
+            if (ModelState.IsValid) {
+                _computadorService.AdicionarComputador(computador);
+                return RedirectToAction("ListarComputadores");
+            }
+
+            ViewBag.Grupos = _grupoService.ListarGrupos();
+            return View(computador);
+        }
+
+        //Editar Grupo
 
         [HttpGet]
         public IActionResult EditarGrupo(int id) {
@@ -60,6 +80,8 @@ namespace Projeto_Controle_de_Computadores.Controllers {
             return View(grupo);
         }
 
+        //Excluir Grupo
+
         [HttpPost]
         public IActionResult ExcluirGrupo(int id) {
             try {
@@ -71,29 +93,7 @@ namespace Projeto_Controle_de_Computadores.Controllers {
             }
         }
 
-
-        [HttpGet]
-        public IActionResult CadastroComputador() {
-            var grupos = _grupoService.ListarGrupos();
-            if (grupos == null || !grupos.Any()) {
-                ViewBag.ErrorMessage = "Não há grupos disponíveis. Por favor, cadastre um grupo primeiro.";
-                return View("ListarGrupos");
-            }
-
-            ViewBag.Grupos = grupos;
-            return View(new Computador());
-        }
-
-        [HttpPost]
-        public IActionResult CadastroComputador(Computador computador) {
-            if (ModelState.IsValid) {
-                _computadorService.AdicionarComputador(computador);
-                return RedirectToAction("ListarComputadores");
-            }
-
-            ViewBag.Grupos = _grupoService.ListarGrupos();
-            return View(computador);
-        }
+        //Editar Computador
 
         [HttpGet]
         public IActionResult EditarComputador(int id) {
@@ -116,21 +116,32 @@ namespace Projeto_Controle_de_Computadores.Controllers {
             return View(computador);
         }
 
+        //Excluir Computador
+
         [HttpPost]
         public IActionResult ExcluirComputador(int id) {
             try {
                 _computadorService.ExcluirComputador(id);
-                return RedirectToAction("Listarcomputadores");
+                return RedirectToAction("ListarComputadores");
             } catch (Exception ex) {
                 ViewBag.ErrorMessage = ex.Message;
-                return RedirectToAction("Listarcomputadores");
+                return RedirectToAction("ListarComputadores");
             }
         }
+
+
+        //Listar
 
         [HttpGet]
         public IActionResult ListarComputadores() {
             var computadores = _computadorService.ListarComputadores();
             return View(computadores);
+        }
+
+        [HttpGet]
+        public IActionResult ListarGrupos() {
+            var grupos = _grupoService.ListarGrupos() ?? new List<Grupo>();
+            return View(grupos);
         }
     }
 }

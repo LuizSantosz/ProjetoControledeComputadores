@@ -6,7 +6,6 @@ namespace Projeto_Controle_de_Computadores.Services {
     public class GrupoService {
         private List<Grupo> grupos = new List<Grupo>();
 
-        // Adiciona um grupo à lista, com verificação para evitar grupos nulos ou duplicados
         public void AdicionarGrupo(Grupo grupo) {
             if (grupo == null) {
                 throw new ArgumentNullException(nameof(grupo), "O grupo não pode ser nulo.");
@@ -36,7 +35,6 @@ namespace Projeto_Controle_de_Computadores.Services {
             grupos.Remove(grupo);
         }
 
-        // Retorna a lista de grupos
         public List<Grupo> ListarGrupos() {
             return grupos;
         }
